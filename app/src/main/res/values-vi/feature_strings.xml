@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fcm_apps_title">Trợ lý ứng dụng FCM</string>
+    <string name="fcm_apps_summary">Tìm ứng dụng đã cài có khai báo thành phần nhận FCM/GCM tiêu chuẩn, rồi kiểm tra trạng thái Tự khởi động nếu HyperOS cho phép đọc.</string>
+    <string name="scan_fcm_apps">Quét ứng dụng FCM</string>
+    <string name="collapse_fcm_apps">Thu gọn danh sách</string>
+    <string name="open_autostart_manager">Cấu hình trong HyperOS</string>
+    <string name="fcm_apps_not_scanned">Nhấn Quét ứng dụng FCM để tạo danh sách trên máy.</string>
+    <string name="fcm_apps_found">Phát hiện %1$d ứng dụng hỗ trợ FCM</string>
+    <string name="fcm_apps_status_summary">%1$d ứng dụng · %2$d đã bật · %3$d cần kiểm tra · %4$d chưa rõ</string>
+    <string name="fcm_autostart_status_unavailable">Phát hiện %1$d ứng dụng FCM. Bản HyperOS này không cho phép đọc trạng thái Tự khởi động. Hãy chọn Cấu hình trong HyperOS.</string>
+    <string name="no_fcm_apps">Không tìm thấy ứng dụng FCM có thể mở.</string>
+    <string name="app_settings">Tự khởi động</string>
+    <string name="autostart_enabled">Đã bật</string>
+    <string name="autostart_partial">Bật một phần</string>
+    <string name="autostart_disabled">Đã tắt</string>
+    <string name="autostart_unknown">Chưa rõ</string>
+    <string name="autostart_manager_unavailable">Không thể mở cài đặt Tự khởi động của HyperOS</string>
+    <string name="app_settings_unavailable">Không thể mở cài đặt ứng dụng</string>
+    <string name="fcm_detection_note">Trạng thái Tự khởi động chỉ được đọc khi hệ thống cho phép. Chưa rõ nghĩa là HyperOS chặn hoặc không cung cấp kết quả truy vấn AppOps của hãng; FCM Guard không xem Chưa rõ là Đã tắt.</string>
+
+    <string name="appearance_title">Giao diện</string>
+    <string name="appearance_summary">Mặc định: theo hệ thống. Chỉ thay đổi giao diện, không thêm tác vụ nền.</string>
+    <string name="theme_system">Hệ thống</string>
+    <string name="theme_light">Sáng</string>
+    <string name="theme_dark">Tối</string>
+</resources>

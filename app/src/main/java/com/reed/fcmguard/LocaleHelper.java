@@ -13,18 +13,19 @@ public final class LocaleHelper {
     private static final String PREFS = "guard_state";
     private static final String KEY_LANG = "ui_language";
     private static final String KEY_MIGRATED = "native_locale_migrated";
+    private static final String KEY_INITIALIZED = "vietnamese_default_initialized";
 
     private LocaleHelper() {}
 
     /** Android 13+ uses LocaleManager; older Android keeps a small compatibility path. */
     public static Context apply(Context context) {
-        if (Build.VERSION.SDK_INT >= 33) return context;
-
-        String code = getLegacyLanguage(context);
+        initializeLanguage(context);
+        String code = getLanguage(context);
         if ("system".equals(code)) return context;
 
         Locale locale = Locale.forLanguageTag(code);
-        Locale.setDefault(locale);
+        if (Build.VERSION.SDK_INT < 33) Locale.setDefault(locale);
+        // LocaleManager's configuration change may still be pending on first launch.
         Configuration config = new Configuration(context.getResources().getConfiguration());
         config.setLocale(locale);
         return context.createConfigurationContext(config);
@@ -43,6 +44,7 @@ public final class LocaleHelper {
 
     public static void setLanguage(Context context, String code) {
         String normalized = normalize(code);
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit();
         if (Build.VERSION.SDK_INT >= 33) {
             LocaleManager localeManager = (LocaleManager) context.getSystemService(Context.LOCALE_SERVICE);
             if (localeManager == null) return;
@@ -50,31 +52,34 @@ public final class LocaleHelper {
                     ? LocaleList.getEmptyLocaleList()
                     : LocaleList.forLanguageTags(normalized);
             localeManager.setApplicationLocales(locales);
-            return;
+            editor.putBoolean(KEY_MIGRATED, true).remove(KEY_LANG);
+        } else {
+            editor.putString(KEY_LANG, normalized);
         }
-
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .edit()
-                .putString(KEY_LANG, normalized)
-                .apply();
+        editor.putBoolean(KEY_INITIALIZED, true).apply();
     }
 
-    /** One-time bridge from the pre-v1.4.4 custom language preference. */
-    public static void migrateLegacyPreference(Context context) {
-        if (Build.VERSION.SDK_INT < 33) return;
-
+    private static void initializeLanguage(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        if (prefs.getBoolean(KEY_MIGRATED, false)) return;
+        boolean initialized = prefs.getBoolean(KEY_INITIALIZED, false);
+        boolean migrated = prefs.getBoolean(KEY_MIGRATED, false);
+        if (initialized && (Build.VERSION.SDK_INT < 33 || migrated)) return;
 
-        String legacy = normalize(prefs.getString(KEY_LANG, "system"));
-        prefs.edit().putBoolean(KEY_MIGRATED, true).remove(KEY_LANG).apply();
-
-        LocaleManager localeManager = (LocaleManager) context.getSystemService(Context.LOCALE_SERVICE);
-        if (localeManager == null || "system".equals(legacy)) return;
-        LocaleList current = localeManager.getApplicationLocales();
-        if (current == null || current.isEmpty()) {
-            localeManager.setApplicationLocales(LocaleList.forLanguageTags(legacy));
+        String legacy = getLegacyLanguage(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        if (Build.VERSION.SDK_INT >= 33) {
+            LocaleManager manager = (LocaleManager) context.getSystemService(Context.LOCALE_SERVICE);
+            if (manager == null) return;
+            String language = initialized ? "system" : "vi";
+            if (!migrated && !"system".equals(legacy)) language = legacy;
+            if (manager.getApplicationLocales().isEmpty() && !"system".equals(language)) {
+                manager.setApplicationLocales(LocaleList.forLanguageTags(language));
+            }
+            editor.putBoolean(KEY_MIGRATED, true).remove(KEY_LANG);
+        } else {
+            editor.putString(KEY_LANG, "system".equals(legacy) ? "vi" : legacy);
         }
+        editor.putBoolean(KEY_INITIALIZED, true).apply();
     }
 
     private static String getLegacyLanguage(Context context) {
@@ -88,6 +93,7 @@ public final class LocaleHelper {
         }
 
         String lower = code.toLowerCase(Locale.ROOT);
+        if (lower.startsWith("vi")) return "vi";
         if (lower.startsWith("zh-tw") || lower.startsWith("zh-hk") ||
                 lower.startsWith("zh-mo") || lower.contains("hant")) {
             return "zh-TW";

@@ -59,7 +59,7 @@
                     android:layout_height="@dimen/language_button_height"
                     android:layout_marginLeft="@dimen/language_button_margin_start"
                     android:background="@drawable/hero_pill_bg"
-                    android:text="Language"
+                    android:text="@string/language"
                     android:textAllCaps="false"
                     android:textColor="@color/blue"
                     android:textSize="14sp"

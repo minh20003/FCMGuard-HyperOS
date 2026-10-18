@@ -12,6 +12,7 @@ android {
         targetSdk 22
         versionCode 30
         versionName "1.5.9"
+        testInstrumentationRunner "com.reed.fcmguard.LocaleHelperSelfCheck"
     }
 
     signingConfigs {

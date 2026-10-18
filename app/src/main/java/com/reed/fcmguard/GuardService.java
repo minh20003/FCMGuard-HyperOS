@@ -10,6 +10,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Build;
@@ -59,10 +60,11 @@ public class GuardService extends Service {
     }
 
     private void repair(boolean notifyFailure) {
-        SettingsGuard.Result result = SettingsGuard.repair(this);
+        Context localized = LocaleHelper.apply(this);
+        SettingsGuard.Result result = SettingsGuard.repair(localized);
         if (result.changed) {
             FcmReconnect.kick(this);
-            if (foreground) refreshNotification(getString(R.string.notification_repaired));
+            if (foreground) refreshNotification(localized.getString(R.string.notification_repaired));
         } else if (!result.success && notifyFailure && foreground) {
             refreshNotification(result.message);
         }
@@ -90,7 +92,7 @@ public class GuardService extends Service {
     private void applyExecutionMode() {
         if (SettingsGuard.usePersistentNotification(this)) {
             ensureNotificationChannel(this);
-            startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.notification_active)));
+            startForeground(NOTIFICATION_ID, buildNotification(LocaleHelper.apply(this).getString(R.string.notification_active)));
             foreground = true;
         } else {
             if (foreground) stopForeground(true);
@@ -106,6 +108,7 @@ public class GuardService extends Service {
      */
     public static boolean ensureNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return false;
+        context = LocaleHelper.apply(context);
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) return false;
 
@@ -142,6 +145,11 @@ public class GuardService extends Service {
             return channel != null && channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
         }
         return true;
+    }
+
+    @Override public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (foreground) applyExecutionMode();
     }
 
     @Override public void onDestroy() {

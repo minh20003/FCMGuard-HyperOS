@@ -40,10 +40,10 @@ import java.util.List;
 
 public class MainActivity extends Activity {
     private static final String[] LANGUAGE_CODES = {
-            "system", "en", "zh-CN", "zh-TW", "fr", "ja", "ko", "es", "pt", "de", "ru"
+            "system", "vi", "en", "zh-CN", "zh-TW", "fr", "ja", "ko", "es", "pt", "de", "ru"
     };
     private static final String[] LANGUAGE_BUTTON_LABELS = {
-            "Language", "语言", "語言", "Langue", "言語", "언어", "Idioma", "Idioma", "Sprache", "Язык"
+            "Ngôn ngữ", "Language", "语言", "語言", "Langue", "言語", "언어", "Idioma", "Idioma", "Sprache", "Язык"
     };
     private static final long LANGUAGE_LABEL_INTERVAL_MS = 2200L;
 
@@ -96,7 +96,6 @@ public class MainActivity extends Activity {
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LocaleHelper.migrateLegacyPreference(this);
         configureFullEdgeToEdge();
         setContentView(R.layout.activity_main);
         applySystemBarInsets();
@@ -162,7 +161,7 @@ public class MainActivity extends Activity {
     }
 
     private void setupLanguagePicker() {
-        languageButton.setText(LANGUAGE_BUTTON_LABELS[0]);
+        languageButton.setText(R.string.language);
         languageButton.setOnClickListener(v -> {
             if (Build.VERSION.SDK_INT >= 33) {
                 try {

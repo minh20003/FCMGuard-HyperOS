@@ -27,7 +27,7 @@
 - **Optional persistent notification** — foreground mode uses a visible-but-silent notification channel for stronger process survival; quiet background mode remains available.
 - **FCM app assistant** — scans likely Firebase/GCM clients and, when HyperOS exposes the vendor AppOps state, shows read-only Autostart status with automatic re-check after returning from system settings.
 - **Native dark mode** — System / Light / Dark, with **System** as the default.
-- **10-language UI** — English, Simplified Chinese, Traditional Chinese, French, Japanese, Korean, Spanish, Portuguese, German, and Russian through Android's native per-app language mechanism.
+- **11-language UI** — Vietnamese (default), English, Simplified Chinese, Traditional Chinese, French, Japanese, Korean, Spanish, Portuguese, German, and Russian through Android's native per-app language mechanism.
 - **Compact-phone ready** — responsive layout checks cover 320–480dp widths, including a Xiaomi 17-class 393dp profile.
 
 ## Quick setup
@@ -136,9 +136,11 @@ Also enable **Autostart** for the affected app when the ROM exposes that option.
 ## Appearance, languages, and responsive layout
 
 - System / Light / Dark appearance modes.
-- 10 native app languages: English, Simplified Chinese, Traditional Chinese, French, Japanese, Korean, Spanish, Portuguese, German, and Russian.
+- 11 native app languages: Vietnamese, English, Simplified Chinese, Traditional Chinese, French, Japanese, Korean, Spanish, Portuguese, German, and Russian.
 - Compact and large-width resource profiles.
 - CI geometry checks for 320, 360, 393, 411, 430, and 480dp widths.
+
+Vietnamese is selected once on first launch or upgrade when no specific app language is saved, even if the phone uses another language. Existing explicit language choices are preserved. Use the language button at the top right to choose another language or **Follow system**; later launches keep that choice.
 
 ## Permissions and privacy
 
